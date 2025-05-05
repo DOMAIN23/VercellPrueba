@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}UPSA{% endblock %}
+
+{% block content %}
+<div class="area-principal">
+  <h2>Sube tu archivo CSV para predecir la deserción</h2>
+
+  <form action="/index" method="post" enctype="multipart/form-data">
+    <input type="file" name="archivo" accept=".csv">
+    <button type="submit">Subir y predecir</button>
+  </form>
+
+  {% if report %}
+    <p style="color: red;">{{ report }}</p>
+  {% endif %}
+
+  {% if alertas %}
+    <div style="margin-top: 20px;">
+      {% for alerta in alertas %}
+        <div style="background-color: #ffeeba; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+          {{ alerta }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if data %}
+    <h3>Resultados de la predicción</h3>
+    <table class="tabla-prediccion">
+      <thead>
+        <tr>
+          {% for col in columns %}
+            <th>{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data %}
+          <tr>
+            {% for col in columns %}
+              <td>{{ row[col] }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- BOTÓN guardar -->
+    <div style="margin-top: 20px;">
+      <button class="download-button" onclick="mostrarPopup()">
+        <div class="docs">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          Guardar
+        </div>
+        <div class="download">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="css-i6dzq1">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </div>
+      </button>
+    </div>
+  {% endif %}
+</div>
+
+<div id="popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+  <div class="card" onclick="event.stopPropagation()">
+    <div class="mac-header">
+      <span class="red"></span>
+      <span class="yellow"></span>
+      <span class="green"></span>
+    </div>
+    <span class="card-title">Seleccionar Datos</span>
+
+    <!-- Selección de curso -->
+    <label for="curso" class="card-description">Elegir curso:</label>
+    <select id="curso" style="width: 100%; padding: 10px; margin-bottom: 15px;">
+      <option value="">--Selecciona uno de sus cursos--</option>
+      <option value="curso1">Computación en la nube</option>
+      <option value="curso2">Diseño de Apps</option>
+      <option value="curso3">Calidad y preuba de software</option>
+      <option value="curso4">Creatividad Digital</option>
+    </select>
+
+    <!-- Selección de aula con ID aleatorio -->
+    <label for="aula" class="card-description">Aula:</label>
+    <select id="aula" style="width: 100%; padding: 10px; margin-bottom: 15px;">
+      <option value="">--Selecciona un aula--</option>
+      <option value="A2345">A2345</option>
+      <option value="B1289">B1289</option>
+      <option value="C4721">C4721</option>
+      <option value="D3902">D3902</option>
+    </select>
+
+    <!-- Selección de turno -->
+    <label for="turno" class="card-description">Turno:</label>
+    <select id="turno" style="width: 100%; padding: 10px; margin-bottom: 15px;">
+      <option value="">--Selecciona un turno--</option>
+      <option value="dia">Día</option>
+      <option value="noche">Noche</option>
+    </select>
+
+    <button style="margin-top: 15px; padding: 10px; background-color: #2b6734; color: white; border: none; border-radius: 5px;" onclick="cerrarPopup()">Guardar</button>
+  </div>
+</div>
+
+<script>
+  function mostrarPopup() {
+    document.getElementById('popup').style.display = 'flex';
+  }
+
+  function cerrarPopup() {
+    document.getElementById('popup').style.display = 'none';
+  }
+
+  document.getElementById('popup').addEventListener('click', function () {
+    cerrarPopup();
+  });
+</script>
+{% endblock %}
